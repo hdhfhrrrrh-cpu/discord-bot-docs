@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>디스코드 통합 관리 봇 명령어 매뉴얼</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        discord: {
+                            blurple: '#5865F2',
+                            green: '#57F287',
+                            yellow: '#FEE75C',
+                            fuchsia: '#EB459E',
+                            red: '#ED4245',
+                            dark: '#313338',
+                            darker: '#2B2D31',
+                            darkest: '#1E1F22',
+                            channel: '#383A40',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+            background-color: #1E1F22;
+            color: #DBDEE1;
+        }
+
+        .glass-panel {
+            background: rgba(43, 45, 49, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-card {
+            background: rgba(49, 51, 56, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(88, 101, 242, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.4), 0 0 20px 0 rgba(88, 101, 242, 0.15);
+        }
+
+        .blurple-gradient {
+            background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%);
+        }
+
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(88, 101, 242, 0.4);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #2B2D31;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E1F22;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5865F2;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-discord-blurple selection:text-white">
+
+    <header class="sticky top-0 z-40 glass-panel border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-10 h-10 rounded-2xl blurple-gradient flex items-center justify-center text-white shadow-lg glow-effect">
+                    <i class="fa-brands fa-discord text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                        다기능 디스코드 봇 <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-discord-blurple/20 text-discord-blurple border border-discord-blurple/30 font-mono">v2.0</span>
+                    </h1>
+                    <p class="text-xs text-gray-400 hidden sm:block">티켓 · 로블록스 연동 · DM 시스템 · 관리자 제재</p>
+                </div>
+            </div>
+
+            <nav class="flex items-center space-x-2 sm:space-x-4">
+                <button onclick="scrollToSection('commands')" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-medium hover:bg-white/5 text-gray-200 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-terminal text-discord-blurple"></i>
+                    <span>명령어 매뉴얼</span>
+                </button>
+                <button onclick="scrollToSection('faq')" class="px-3 py-2 rounded-xl text-xs sm:text-sm font-medium hover:bg-white/5 text-gray-200 transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-discord-yellow"></i>
+                    <span>FAQ</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <section class="relative py-14 overflow-hidden border-b border-white/5 bg-gradient-to-b from-discord-darker to-discord-darkest">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-discord-blurple/20 via-transparent to-transparent"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-discord-blurple/15 text-discord-blurple border border-discord-blurple/30 mb-5">
+                <i class="fa-solid fa-book"></i> 서버 관리용 공식 명령어 설명서
+            </span>
+            <h2 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                명령어 매뉴얼 & 사용 가이드
+            </h2>
+            <p class="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto mb-6 leading-relaxed">
+                티켓 문의, 로블록스 계정 연동 인증, 대량 DM 공지발송 및 관리자 차단/타임아웃 명령어까지 상세 사용법을 확인하세요.
+            </p>
+        </div>
+    </section>
+
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+        <!-- SECTION: COMMANDS DIRECTORY -->
+        <section id="commands" class="scroll-mt-24">
+            
+            <!-- Controls: Search & Category Filter -->
+            <div class="glass-panel p-5 rounded-2xl mb-8 space-y-4 border border-white/10">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                        <input type="text" id="cmd-search" oninput="handleSearch()" placeholder="명령어 또는 기능 검색..." class="w-full bg-discord-darkest text-white text-sm rounded-xl pl-10 pr-4 py-2.5 border border-white/10 focus:outline-none focus:border-discord-blurple transition-all placeholder:text-gray-500">
+                    </div>
+
+                    <!-- Category Buttons -->
+                    <div class="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
+                        <button onclick="filterCategory('all')" class="cmd-filter-btn active px-3.5 py-2 rounded-xl text-xs font-semibold bg-discord-blurple text-white transition-all">
+                            전체 보기
+                        </button>
+                        <button onclick="filterCategory('ticket')" class="cmd-filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                            🎫 티켓 시스템
+                        </button>
+                        <button onclick="filterCategory('auth')" class="cmd-filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                            🎮 로블록스 인증
+                        </button>
+                        <button onclick="filterCategory('dm')" class="cmd-filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                            📩 DM 시스템
+                        </button>
+                        <button onclick="filterCategory('admin')" class="cmd-filter-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+                            🔨 서버 관리
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6" id="commands-container">
+
+                <!-- Command 1: /티켓 -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="ticket" data-keywords="티켓 드롭다운 개발자지원 유저신고 일반문의">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-blurple/20 text-discord-blurple text-xs font-bold font-mono">SLASH</span>
+                                <h4 class="font-mono text-lg font-bold text-white">/티켓</h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">관리자 전용</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            드롭다운 선택 메뉴가 포함된 고객 지원 티켓 발급 패널을 설정된 채널에 생성합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 space-y-2 mb-4">
+                            <div class="font-semibold text-discord-blurple flex items-center gap-1.5">
+                                <i class="fa-solid fa-list-ul"></i> 드롭다운 선택 옵션 3종:
+                            </div>
+                            <div class="pl-2 border-l-2 border-discord-blurple/30 space-y-1">
+                                <div><strong class="text-white">💻 개발자지원:</strong> 전용 채널 생성 후 안내 및 사진/이미지 첨부 대기</div>
+                                <div><strong class="text-white">🚨 유저신고:</strong> 신고 대상 및 상세 사유 작성 모달 팝업</div>
+                                <div><strong class="text-white">❓ 일반문의:</strong> 문의 내용 작성 모달 팝업 후 개인 문의 채널 생성</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('ticket_panel')" class="text-xs font-semibold text-discord-blurple hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('/티켓', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 2: /티켓설정 -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="ticket" data-keywords="티켓설정 제목 설명 설정 config">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-blurple/20 text-discord-blurple text-xs font-bold font-mono">SLASH</span>
+                                <h4 class="font-mono text-lg font-bold text-white">/티켓설정</h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">관리자 전용</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            티켓 패널에 표시될 커스텀 제목과 안내 설명글을 설정합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 space-y-1.5 mb-4">
+                            <div class="font-semibold text-gray-400">명령어 인자:</div>
+                            <div class="font-mono text-discord-green">title: <span class="text-gray-300 font-sans">티켓 패널 제목</span></div>
+                            <div class="font-mono text-discord-green">description: <span class="text-gray-300 font-sans">상세 안내 설명문구</span></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('ticket_config')" class="text-xs font-semibold text-discord-blurple hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('/티켓설정', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 3: /인증패널 -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="auth" data-keywords="인증패널 로블록스 roblox 인증 버튼 모달">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-green/20 text-discord-green text-xs font-bold font-mono">SLASH</span>
+                                <h4 class="font-mono text-lg font-bold text-white">/인증패널</h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">관리자 전용</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            유저가 버튼을 눌러 로블록스 닉네임 인증을 진행할 수 있는 안내 패널을 출력합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 space-y-1 mb-4">
+                            <div class="font-semibold text-discord-green mb-1"><i class="fa-solid fa-shield-halved"></i> 로블록스 API 검증 프로세스:</div>
+                            <p>1. 모달 창에 입력된 닉네임 검증</p>
+                            <p>2. 실존하는 유저일 경우 닉네임 변경 및 설정된 역할 자동 지급</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('auth_panel')" class="text-xs font-semibold text-discord-green hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('/인증패널', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 4: /인증설정 -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="auth" data-keywords="인증설정 접두사 사원 훈련병 역할 중복">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-green/20 text-discord-green text-xs font-bold font-mono">SLASH</span>
+                                <h4 class="font-mono text-lg font-bold text-white">/인증설정</h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">관리자 전용</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            인증 완료 시 부여될 닉네임 접두사(예: [사원], [훈련병]) 및 지급할 역할을 설정합니다. (중복 역할 가능)
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 space-y-1.5 mb-4">
+                            <div class="font-semibold text-gray-400">명령어 인자:</div>
+                            <div class="font-mono text-discord-green">prefix: <span class="text-gray-300 font-sans">접두사 (예: [사원])</span></div>
+                            <div class="font-mono text-discord-green">role1 / role2 / role3: <span class="text-gray-300 font-sans">지급할 역할들</span></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('auth_config')" class="text-xs font-semibold text-discord-green hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('/인증설정', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 5: /디엠보내기 -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="dm" data-keywords="디엠보내기 유저 DM 개별 모달">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-fuchsia/20 text-discord-fuchsia text-xs font-bold font-mono">SLASH</span>
+                                <h4 class="font-mono text-lg font-bold text-white">/디엠보내기</h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">관리자 전용</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            지정한 유저에게 작성용 모달 팝업을 띄워 1:1 디렉트 메시지를 발송합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 space-y-1.5 mb-4">
+                            <div class="font-semibold text-gray-400">명령어 인자:</div>
+                            <div class="font-mono text-discord-fuchsia">user: <span class="text-gray-300 font-sans">메시지를 받을 대상 유저</span></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('send_dm_single')" class="text-xs font-semibold text-discord-fuchsia hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('/디엠보내기', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 6: /모두에게디엠보내기 -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="dm" data-keywords="모두에게디엠보내기 대량 DM 전체 공지 모달">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-fuchsia/20 text-discord-fuchsia text-xs font-bold font-mono">SLASH</span>
+                                <h4 class="font-mono text-lg font-bold text-white">/모두에게디엠보내기</h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">관리자 전용</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            서버 내 모든 일반 멤버에게 모달을 통해 입력한 메시지를 대량 발송합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 mb-4">
+                            ⚡ Rate Limit 자동 방지 처리 (0.5초 딜레이) 및 성공/실패 통계 보고서가 제공됩니다.
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('send_dm_mass')" class="text-xs font-semibold text-discord-fuchsia hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('/모두에게디엠보내기', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 7: .ban -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="admin" data-keywords="ban 차단 밴 사유 제재">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-red/20 text-discord-red text-xs font-bold font-mono">PREFIX (.)</span>
+                                <h4 class="font-mono text-lg font-bold text-white">.ban <span class="text-gray-400 font-normal text-sm">유저 [사유]</span></h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">멤버 차단 권한</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            서버 규칙을 위반한 유저를 서버에서 영구 차단합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 font-mono text-xs text-gray-300 mb-4">
+                            .ban @홍길동 광고 행위 위반
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('ban')" class="text-xs font-semibold text-discord-red hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('.ban', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Command 8: .time -->
+                <div class="cmd-card glass-card rounded-2xl p-6 flex flex-col justify-between" data-category="admin" data-keywords="time 타임아웃 제한 시간 초 분 시간 일">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-lg bg-discord-red/20 text-discord-red text-xs font-bold font-mono">PREFIX (.)</span>
+                                <h4 class="font-mono text-lg font-bold text-white">.time <span class="text-gray-400 font-normal text-sm">시간 유저 [사유]</span></h4>
+                            </div>
+                            <span class="text-xs px-2.5 py-1 rounded-md bg-white/5 text-gray-400 font-medium">멤버 관리 권한</span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-4 leading-relaxed">
+                            지정한 시간 동안 유저에게 타임아웃(채팅 및 음성 차단) 조치를 적용합니다.
+                        </p>
+                        <div class="bg-discord-darkest/70 rounded-xl p-3.5 border border-white/5 text-xs text-gray-300 space-y-1 mb-4">
+                            <div class="font-semibold text-discord-yellow">시간 단위: <span class="font-mono text-white">s(초), m(분), h(시간), d(일)</span></div>
+                            <div class="font-mono text-gray-300 pt-1">.time 10m @홍길동 도배</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-3 border-t border-white/5">
+                        <button onclick="openDetailModal('time')" class="text-xs font-semibold text-discord-red hover:text-white transition-colors flex items-center gap-1">
+                            <span>자세히 보기</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                        <button onclick="copyToClipboard('.time', this)" class="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-mono text-gray-300 transition-all flex items-center gap-1.5">
+                            <i class="fa-regular fa-copy"></i> 복사
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- No Search Results Box -->
+            <div id="no-results" class="hidden text-center py-16 glass-panel rounded-2xl border border-white/5">
+                <i class="fa-solid fa-magnifying-glass text-4xl text-gray-500 mb-3"></i>
+                <h4 class="text-lg font-bold text-white">검색 결과가 없습니다</h4>
+                <p class="text-xs text-gray-400 mt-1">다른 키워드나 카테고리 필터로 다시 검색해 보세요.</p>
+            </div>
+        </section>
+
+        <section id="faq" class="scroll-mt-24 pt-6">
+            <div class="flex items-center space-x-3 mb-6">
+                <div class="w-8 h-8 rounded-xl bg-discord-yellow/20 text-discord-yellow flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-circle-question"></i>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold text-white">자주 묻는 질문 (FAQ)</h3>
+                    <p class="text-xs text-gray-400">명령어 실행 및 기능 사용 시 주요 참고 사항</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="glass-card rounded-2xl p-5 border border-white/5">
+                    <h4 class="font-bold text-white text-sm sm:text-base mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-discord-blurple"></i>
+                        슬래시 커맨드가 작동하지 않거나 보이지 않습니다.
+                    </h4>
+                    <p class="text-xs sm:text-sm text-gray-300 leading-relaxed pl-6">
+                        봇 실행 시 콘솔에 <code class="text-discord-yellow font-mono">슬래시 명령어 동기화 완료</code> 메시지가 출력되었는지 확인하세요. 디스코드 클라이언트 앱을 <code class="text-discord-yellow font-mono">Ctrl + R</code> 로 새로고침하거나, 서버 내 채널에 '애플리케이션 명령어 사용' 권한이 켜져 있는지 체크해야 합니다.
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-5 border border-white/5">
+                    <h4 class="font-bold text-white text-sm sm:text-base mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-discord-blurple"></i>
+                        로블록스 인증 시 닉네임 변경 권한 에러가 납니다.
+                    </h4>
+                    <p class="text-sm text-gray-300 leading-relaxed pl-6">
+                        디스코드의 역할 계층 구조상 봇의 최고 역할 위치가 변경하려는 대상 멤버보다 위에 위치해야 합니다. 서버 설정 ➔ [역할] 메뉴에서 봇 역할 레이어를 더 높게 드래그해 옮겨주세요.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm transition-opacity">
+        <div class="glass-panel w-full max-w-xl rounded-2xl p-6 border border-white/10 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+            <button onclick="closeDetailModal()" class="absolute right-4 top-4 text-gray-400 hover:text-white p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+
+            <div id="modal-content" class="space-y-4">
+                <!-- Dynamically Inserted Modal Data -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="glass-panel border-t border-white/10 mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-400">
+            <div class="flex items-center space-x-2">
+                <i class="fa-brands fa-discord text-discord-blurple text-base"></i>
+                <span class="font-medium text-gray-300">Discord Bot Command Documentation System</span>
+            </div>
+            <div>
+                © 2026 discord.py v2.0+ Command Reference Guide.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Modal Data Mapping
+        const modalData = {
+            'ticket_panel': {
+                title: '/티켓 패널 생성',
+                type: 'SLASH COMMAND',
+                perm: '관리자 (Administrator)',
+                desc: '설정된 안내 제목과 설명 임베드와 함께 문의 종류를 선택할 수 있는 드롭다운 메뉴를 전송합니다.',
+                details: [
+                    '개발자지원: 채널 생성 후 사진 파일 첨부 요청 팝업이 출력됩니다.',
+                    '유저신고: 신고 유저 닉네임 및 상세 사유 입력 모달 창이 뜹니다.',
+                    '일반문의: 문의 내용 입력 모달 창 작성 후 비밀 문의 채널이 생성됩니다.'
+                ],
+                example: '/티켓'
+            },
+            'ticket_config': {
+                title: '/티켓설정 커스텀',
+                type: 'SLASH COMMAND',
+                perm: '관리자 (Administrator)',
+                desc: '/티켓 패널에 나타날 제목과 설명을 설정하고 config.json 에 저장합니다.',
+                details: [
+                    'title: 임베드 상단 제목',
+                    'description: 임베드 메인 안내 문구'
+                ],
+                example: '/티켓설정 title:고객지원 센터 description:문의하실 항목을 아래 드롭다운에서 선택하세요.'
+            },
+            'auth_panel': {
+                title: '/인증패널 생성',
+                type: 'SLASH COMMAND',
+                perm: '관리자 (Administrator)',
+                desc: '로블록스 계정을 실시간 API 연동으로 인증받을 수 있는 버튼 패널을 생성합니다.',
+                details: [
+                    '유저가 [인증하기] 버튼 클릭 시 모달창 출현',
+                    '로블록스 API로 실존 유저 검증',
+                    '닉네임을 [접두사] 로블록스닉네임 형태로 자동 변경'
+                ],
+                example: '/인증패널'
+            },
+            'auth_config': {
+                title: '/인증설정 시스템',
+                type: 'SLASH COMMAND',
+                perm: '관리자 (Administrator)',
+                desc: '인증 성공 시 닉네임 앞에 부착할 칭호/접두사와 부여할 역할을 지정합니다.',
+                details: [
+                    'prefix: 예시) [사원] 또는 [훈련병]',
+                    'role1, role2, role3: 최대 3개까지 중복 역할 자동 지정 지원'
+                ],
+                example: '/인증설정 prefix:[사원] role1:@정회원 role2:@인증유저'
+            },
+            'send_dm_single': {
+                title: '/디엠보내기 유저',
+                type: 'SLASH COMMAND',
+                perm: '관리자 (Administrator)',
+                desc: '선택한 특정 유저에게 모달 입력 창을 이용해 1:1 메시지를 발송합니다.',
+                details: [
+                    '모달 창에서 긴 텍스트 작성 가능',
+                    '해당 유저의 DM 차단 여부를 감지하여 결과 안내'
+                ],
+                example: '/디엠보내기 user:@홍길동'
+            },
+            'send_dm_mass': {
+                title: '/모두에게디엠보내기 대량전송',
+                type: 'SLASH COMMAND',
+                perm: '관리자 (Administrator)',
+                desc: '서버 내 모든 일반 멤버에게 일괄 공지 DM을 발송합니다.',
+                details: [
+                    '모달 창으로 작성 내용 입력',
+                    '0.5초간 간격 딜레이로 차단 방지',
+                    '성공/실패 통계 보고서 발송'
+                ],
+                example: '/모두에게디엠보내기'
+            },
+            'ban': {
+                title: '.ban 유저 영구 차단',
+                type: 'PREFIX COMMAND (.)',
+                perm: '멤버 차단 (Ban Members)',
+                desc: '규정 위반 유저를 서버에서 영구적으로 차단 처리합니다.',
+                details: [
+                    '유저 멘션 필수',
+                    '사유 미입력 시 [사유 없음] 자동 처리'
+                ],
+                example: '.ban @홍길동 부적절한 도배'
+            },
+            'time': {
+                title: '.time 유저 타임아웃 제한',
+                type: 'PREFIX COMMAND (.)',
+                perm: '멤버 관리 (Moderate Members)',
+                desc: '지정한 기간 동안 유저의 모든 채팅 및 음성 작성을 제한합니다.',
+                details: [
+                    's: 초 / m: 분 / h: 시간 / d: 일',
+                    '예시: 10m = 10분 동안 타임아웃'
+                ],
+                example: '.time 10m @홍길동 스팸 전송'
+            }
+        };
+
+        // Smooth Scroll
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Open Detail Modal
+        function openDetailModal(key) {
+            const data = modalData[key];
+            if (!data) return;
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="px-2.5 py-0.5 rounded bg-discord-blurple/20 text-discord-blurple font-mono text-xs font-bold">${data.type}</span>
+                    <span class="px-2.5 py-0.5 rounded bg-white/5 text-gray-400 text-xs font-medium">${data.perm}</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">${data.title}</h3>
+                <p class="text-sm text-gray-300 leading-relaxed">${data.desc}</p>
+
+                <div class="bg-discord-darkest rounded-xl p-4 border border-white/5 my-3">
+                    <div class="text-xs font-semibold text-discord-blurple mb-2">상세 작동 방식</div>
+                    <ul class="text-xs text-gray-300 space-y-1.5 list-disc list-inside">
+                        ${data.details.map(d => `<li>${d}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="text-xs text-gray-400">사용 구문 예시:</div>
+                    <div class="bg-discord-darker p-3 rounded-xl border border-white/5 flex items-center justify-between">
+                        <code class="font-mono text-xs text-discord-green">${data.example}</code>
+                        <button onclick="copyToClipboard('${data.example}', this)" class="text-gray-400 hover:text-white text-xs">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('detail-modal').classList.remove('hidden');
+        }
+
+        // Close Detail Modal
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        // Close Modal on Background Click
+        document.getElementById('detail-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeDetailModal();
+        });
+
+        // Copy Text to Clipboard
+        function copyToClipboard(text, btnElement) {
+            const temp = document.createElement("textarea");
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand("copy");
+            document.body.removeChild(temp);
+
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = `<i class="fa-solid fa-check text-discord-green"></i> 복사됨`;
+            setTimeout(() => {
+                btnElement.innerHTML = originalHTML;
+            }, 1500);
+        }
+
+        // Filter Categories
+        function filterCategory(cat) {
+            const btns = document.querySelectorAll('.cmd-filter-btn');
+            btns.forEach(btn => {
+                btn.classList.remove('bg-discord-blurple', 'text-white', 'active');
+                btn.classList.add('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+            });
+
+            event.currentTarget.classList.add('bg-discord-blurple', 'text-white', 'active');
+            event.currentTarget.classList.remove('text-gray-400', 'hover:text-white', 'hover:bg-white/5');
+
+            applyFilterAndSearch();
+        }
+
+        // Search Input Handling
+        function handleSearch() {
+            applyFilterAndSearch();
+        }
+
+        // Combined Filter and Search Function
+        function applyFilterAndSearch() {
+            const activeCategoryBtn = document.querySelector('.cmd-filter-btn.active');
+            const catText = activeCategoryBtn ? activeCategoryBtn.textContent.trim() : '전체 보기';
+            
+            let category = 'all';
+            if (catText.includes('티켓')) category = 'ticket';
+            else if (catText.includes('로블록스')) category = 'auth';
+            else if (catText.includes('DM')) category = 'dm';
+            else if (catText.includes('관리자')) category = 'admin';
+
+            const query = document.getElementById('cmd-search').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.cmd-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                const cardKeywords = card.getAttribute('data-keywords').toLowerCase();
+                const cardText = card.innerText.toLowerCase();
+
+                const matchCategory = (category === 'all' || cardCat === category);
+                const matchQuery = (query === '' || cardKeywords.includes(query) || cardText.includes(query));
+
+                if (matchCategory && matchQuery) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const noResults = document.getElementById('no-results');
+            if (visibleCount === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
